@@ -11,7 +11,7 @@ const Success = () => {
       setSession(
         await fetch(
           process.env.REACT_APP_BE_API +
-            '/checkout-session?sessionId=' +
+            'checkout-session?sessionId=' +
             sessionId
         ).then((res) => res.json())
       );

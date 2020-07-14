@@ -1,16 +1,13 @@
 import React, { useEffect, useReducer } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 
-const fetchCheckoutSession = async ({ quantity, unitAmount }) => {
+const fetchCheckoutSession = async (line_items) => {
   return fetch(process.env.REACT_APP_BE_API + 'create-checkout-session', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      quantity,
-      unitAmount,
-    }),
+    body: JSON.stringify(line_items),
   }).then((res) => res.json());
 };
 
@@ -108,8 +105,13 @@ const Checkout = () => {
     // Call your backend to create the Checkout session.
     dispatch({ type: 'setLoading', payload: { loading: true } });
     const { sessionId } = await fetchCheckoutSession({
-      quantity: state.quantity,
-      unitAmount: state.unitAmount,
+      line_items: [
+        {
+          quantity: state.quantity,
+          unitAmount: state.unitAmount,
+          productName: 'Halo',
+        },
+      ],
     });
     // When the customer clicks on the button, redirect them to Checkout.
     const { error } = await state.stripe.redirectToCheckout({
